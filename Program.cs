@@ -1,4 +1,5 @@
-﻿using StockPriceAlert.Application.Services;
+﻿using Microsoft.Extensions.Configuration;
+using StockPriceAlert.Application.Services;
 using StockPriceAlert.Domain.Entities;
 using StockPriceAlert.Domain.Services;
 
@@ -9,18 +10,25 @@ class Program
     {
         try
         {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+            var EmailSender = new EmailSender(config);
+
             var stockArgs = GetStockAlertParameters(args);
-            
+
             Console.WriteLine(args[0]);
-            
-            var StockService = new MonitorStockPrice(new AlertUser(new EmailSender()), new StockPriceFetcher(), stockArgs);
+
+            var StockService = new MonitorStockPrice(new AlertUser(EmailSender), new StockPriceFetcher(), stockArgs);
 
             StockService.StartMonitor();
 
             Console.WriteLine("Press [Enter] to stop...");
             Console.ReadLine();
 
-            StockService.StopMonitor(); 
+            StockService.StopMonitor();
         }
         catch (Exception e)
         {

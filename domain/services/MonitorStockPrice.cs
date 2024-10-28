@@ -46,49 +46,56 @@ namespace StockPriceAlert.Domain.Services
 
         public async void CheckPrice()
         {
-            Console.WriteLine("Get Price");
-            decimal price = await StockPriceFetcher.getPrice(this.stockAlertParameters.StockCode);
-
-            Console.WriteLine("" + price);
-
-            switch (currentPriceFlag)
+            try
             {
-                case PriceFlag.WithinRange:
-                    if (price > stockAlertParameters.MaxPrice)
-                    {
-                        AlertUser.alertHighPrice();
-                        currentPriceFlag = PriceFlag.High;
-                    }
-                    else if (price < stockAlertParameters.MinPrice)
-                    {
-                        AlertUser.alertLowPrice();
-                        currentPriceFlag = PriceFlag.Low;
-                    }
-                    break;
-                case PriceFlag.Low:
-                    if (price > stockAlertParameters.MaxPrice)
-                    {
-                        AlertUser.alertHighPrice();
-                        currentPriceFlag = PriceFlag.High;
-                    }
-                    else if (price > stockAlertParameters.MinPrice)
-                    {
-                        AlertUser.alertBackToNormal();
-                        currentPriceFlag = PriceFlag.WithinRange;
-                    }
-                    break;
-                case PriceFlag.High:
-                    if (price < stockAlertParameters.MinPrice)
-                    {
-                        AlertUser.alertLowPrice();
-                        currentPriceFlag = PriceFlag.Low;
-                    }
-                    else if (price < stockAlertParameters.MaxPrice)
-                    {
-                        AlertUser.alertBackToNormal();
-                        currentPriceFlag = PriceFlag.WithinRange;
-                    }
-                    break;
+                // Console.WriteLine("Get Price");
+                decimal price = await StockPriceFetcher.getPrice(this.stockAlertParameters.StockCode);
+
+                // Console.WriteLine("" + price);
+
+                switch (currentPriceFlag)
+                {
+                    case PriceFlag.WithinRange:
+                        if (price > stockAlertParameters.MaxPrice)
+                        {
+                            AlertUser.alertHighPrice(stockAlertParameters, price);
+                            currentPriceFlag = PriceFlag.High;
+                        }
+                        else if (price < stockAlertParameters.MinPrice)
+                        {
+                            AlertUser.alertLowPrice(stockAlertParameters, price);
+                            currentPriceFlag = PriceFlag.Low;
+                        }
+                        break;
+                    case PriceFlag.Low:
+                        if (price > stockAlertParameters.MaxPrice)
+                        {
+                            AlertUser.alertHighPrice(stockAlertParameters, price);
+                            currentPriceFlag = PriceFlag.High;
+                        }
+                        else if (price > stockAlertParameters.MinPrice)
+                        {
+                            AlertUser.alertBackToNormal(stockAlertParameters, price);
+                            currentPriceFlag = PriceFlag.WithinRange;
+                        }
+                        break;
+                    case PriceFlag.High:
+                        if (price < stockAlertParameters.MinPrice)
+                        {
+                            AlertUser.alertLowPrice(stockAlertParameters, price);
+                            currentPriceFlag = PriceFlag.Low;
+                        }
+                        else if (price < stockAlertParameters.MaxPrice)
+                        {
+                            AlertUser.alertBackToNormal(stockAlertParameters, price);
+                            currentPriceFlag = PriceFlag.WithinRange;
+                        }
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error fetching stock price: {e.Message}");
             }
         }
     }
