@@ -3,6 +3,7 @@ using System.Timers;
 using StockPriceAlert.Domain.Entities;
 using StockPriceAlert.Application.Interfaces;
 using Timer = System.Timers.Timer;
+using StockPriceAlert.Domain.Shared;
 
 namespace StockPriceAlert.Domain.Services
 {
@@ -13,7 +14,7 @@ namespace StockPriceAlert.Domain.Services
         private readonly IStockPriceFetcher StockPriceFetcher;
         private readonly StockAlertParameters stockAlertParameters;
         private PriceFlag currentPriceFlag = PriceFlag.WithinRange;
-        private const int TimerLoopInterval = 1 * 1000;
+        private const int TimerLoopInterval = GlobalConstants.TimerLoopInterval;
 
         public MonitorStockPrice(AlertUser AlertUser, IStockPriceFetcher StockPriceFetcher, StockAlertParameters stockAlertParameters)
         {

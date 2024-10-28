@@ -19,9 +19,7 @@ class Program
 
             var stockArgs = GetStockAlertParameters(args);
 
-            Console.WriteLine(args[0]);
-
-            var StockService = new MonitorStockPrice(new AlertUser(EmailSender), new StockPriceFetcher(), stockArgs);
+            var StockService = new MonitorStockPrice(new AlertUser(EmailSender), new StockPriceFetcher(config), stockArgs);
 
             StockService.StartMonitor();
 
