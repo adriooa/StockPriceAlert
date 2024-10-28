@@ -1,17 +1,26 @@
+using System.Net;
+using System.Net.Mail;
 using StockPriceAlert.Application.Interfaces;
 
-namespace StockPriceAlert.Infrastructure.Services
+public class EmailSender : IEmailSender
 {
-    public class EmailSender : IEmailSender
+    public Task SendEmailAsync(string destinationEmailAddress, string subject, string message)
     {
-        public EmailSender() { }
+        string emailSenderAddress = "adrioliveiralves@outlook.com";
+        string emailSenderPassword = "pwsd";
 
-        public void alertHighPrice()
+        var client = new SmtpClient("smtp.office365.com", 587)
         {
-            // Code to send email
-        }
+            EnableSsl = true,
+            UseDefaultCredentials = false,
+            Credentials = new NetworkCredential(emailSenderAddress, emailSenderPassword)
+        };
 
-        public void alertLowPrice() { }
-        public void alertBackToNormal() { }
+        return client.SendMailAsync(
+        new MailMessage(from: destinationEmailAddress,
+                        to: destinationEmailAddress,
+                        subject,
+                        message
+                        ));
     }
 }

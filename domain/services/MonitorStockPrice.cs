@@ -9,15 +9,15 @@ namespace StockPriceAlert.Domain.Services
     public class MonitorStockPrice
     {
         private readonly Timer timer;
-        private readonly IEmailSender EmailSender;
+        private readonly AlertUser AlertUser;
         private readonly IStockPriceFetcher StockPriceFetcher;
         private readonly StockAlertParameters stockAlertParameters;
         private PriceFlag currentPriceFlag = PriceFlag.WithinRange;
-        private const int TimerLoopInterval = 1000;
+        private const int TimerLoopInterval = 1 * 1000;
 
-        public MonitorStockPrice(IEmailSender EmailSender, IStockPriceFetcher StockPriceFetcher, StockAlertParameters stockAlertParameters)
+        public MonitorStockPrice(AlertUser AlertUser, IStockPriceFetcher StockPriceFetcher, StockAlertParameters stockAlertParameters)
         {
-            this.EmailSender = EmailSender;
+            this.AlertUser = AlertUser;
             this.StockPriceFetcher = StockPriceFetcher;
             this.stockAlertParameters = stockAlertParameters;
 
@@ -44,45 +44,48 @@ namespace StockPriceAlert.Domain.Services
             Console.WriteLine("Monitoring stopped.");
         }
 
-        public void CheckPrice()
+        public async void CheckPrice()
         {
-            double price = StockPriceFetcher.getPrice();
+            Console.WriteLine("Get Price");
+            decimal price = await StockPriceFetcher.getPrice(this.stockAlertParameters.StockCode);
+
+            Console.WriteLine("" + price);
 
             switch (currentPriceFlag)
             {
                 case PriceFlag.WithinRange:
                     if (price > stockAlertParameters.MaxPrice)
                     {
-                        EmailSender.alertHighPrice();
+                        AlertUser.alertHighPrice();
                         currentPriceFlag = PriceFlag.High;
                     }
                     else if (price < stockAlertParameters.MinPrice)
                     {
-                        EmailSender.alertLowPrice();
+                        AlertUser.alertLowPrice();
                         currentPriceFlag = PriceFlag.Low;
                     }
                     break;
                 case PriceFlag.Low:
                     if (price > stockAlertParameters.MaxPrice)
                     {
-                        EmailSender.alertHighPrice();
+                        AlertUser.alertHighPrice();
                         currentPriceFlag = PriceFlag.High;
                     }
                     else if (price > stockAlertParameters.MinPrice)
                     {
-                        EmailSender.alertBackToNormal();
+                        AlertUser.alertBackToNormal();
                         currentPriceFlag = PriceFlag.WithinRange;
                     }
                     break;
                 case PriceFlag.High:
                     if (price < stockAlertParameters.MinPrice)
                     {
-                        EmailSender.alertLowPrice();
+                        AlertUser.alertLowPrice();
                         currentPriceFlag = PriceFlag.Low;
                     }
                     else if (price < stockAlertParameters.MaxPrice)
                     {
-                        EmailSender.alertBackToNormal();
+                        AlertUser.alertBackToNormal();
                         currentPriceFlag = PriceFlag.WithinRange;
                     }
                     break;
