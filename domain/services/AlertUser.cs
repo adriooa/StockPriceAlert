@@ -21,7 +21,7 @@ namespace StockPriceAlert.Domain.Services
                 "StockPriceAlert Update: High Stock Price",
                 message);
 
-            Console.WriteLine("Send Mail");
+            Console.WriteLine("Send Mail: alertHighPrice");
         }
 
         public async void alertLowPrice(StockAlertParameters stockAlertParameters, decimal currentPrice)
@@ -33,7 +33,7 @@ namespace StockPriceAlert.Domain.Services
                 "StockPriceAlert Update: Low Stock Price",
                 message);
 
-            Console.WriteLine("Send Mail", message);
+            Console.WriteLine("Send Mail: alertLowPrice");
         }
         public async void alertBackToNormal(StockAlertParameters stockAlertParameters, decimal currentPrice)
         {
@@ -44,7 +44,7 @@ namespace StockPriceAlert.Domain.Services
                 "StockPriceAlert Update: Back to interval price",
                 message);
 
-            Console.WriteLine("Send Mail");
+            Console.WriteLine("Send Mail: alertBackToNormal");
         }
     }
 }

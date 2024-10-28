@@ -6,8 +6,8 @@ using Microsoft.Extensions.Configuration;
 
 public class EmailSender : IEmailSender
 {
-    private readonly EmailSettings emailSettings;
-    private readonly DestinationEmail destinationEmail;
+    private readonly EmailSettings? emailSettings;
+    private readonly DestinationEmail? destinationEmail;
 
     public EmailSender(IConfiguration configuration)
     {
@@ -16,7 +16,7 @@ public class EmailSender : IEmailSender
     }
     public Task SendEmailAsync(string subject, string message)
     {
-        var client = new SmtpClient(emailSettings.SmtpServer, emailSettings.SmtpPort)
+        var client = new SmtpClient(emailSettings!.SmtpServer, emailSettings.SmtpPort)
         {
             EnableSsl = true,
             UseDefaultCredentials = false,
@@ -25,7 +25,7 @@ public class EmailSender : IEmailSender
 
         return client.SendMailAsync(
         new MailMessage(from: emailSettings.FromAddress,
-                        to: destinationEmail.ToAddress,
+                        to: destinationEmail!.ToAddress,
                         subject,
                         message
                         ));

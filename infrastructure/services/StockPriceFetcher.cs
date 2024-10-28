@@ -8,7 +8,7 @@ namespace StockPriceAlert.Application.Services
     {
         private const string BaseUrl = "https://brapi.dev/api/quote/";
         private static readonly HttpClient httpClient = new HttpClient();
-        private string apiToken;
+        private string? apiToken;
         public StockPriceFetcher(IConfiguration configuration)
         {
             apiToken = configuration.GetSection("BrapiSettings:ApiToken").Value;
