@@ -94,11 +94,12 @@ The app uses a JSON configuration file to set up email and stock alert parameter
 Run the application with parameters in the terminal as follows:
 
 ```bash
-dotnet run --project StockPriceAlert -- AAPL 120.0 150.0
+dotnet run --project StockPriceAlert -- {{STOCK_CODE}} {{MIN_PRICE}} {{MAX_PRICE}}
 ```
 Alternatively, you can compile it to an executable:
 ```bash
 dotnet publish -c Release -r win-x64 --self-contained
+StockPriceAlert.exe PETR4 22.67 22.59
 ```
 
 ### Running in VSCode with Arguments
@@ -107,6 +108,6 @@ Go to Run and Debug -> Add Configuration....
 In launch.json, add your arguments under args:
 
 ```json
-"args": ["AAPL", "120.0", "150.0"]
+"args": ["PETR4", "22.67", "22.59"]
 ```
 
