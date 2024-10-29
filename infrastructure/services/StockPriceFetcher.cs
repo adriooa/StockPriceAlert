@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using StockPriceAlert.Application.Interfaces;
+using StockPriceAlert.Domain.Excpetion;
 
 namespace StockPriceAlert.Application.Services
 {
@@ -43,7 +44,7 @@ namespace StockPriceAlert.Application.Services
             }
             else
             {
-                throw new Exception($"API request failed with status code: {response.StatusCode}");
+                throw new ApiException((int)response.StatusCode, $"Failed to retrieve stock price for {stockName}. Status code: {response.StatusCode}. Please check the input parameters");
             }
         }
     }

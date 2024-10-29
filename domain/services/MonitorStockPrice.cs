@@ -4,6 +4,7 @@ using StockPriceAlert.Domain.Entities;
 using StockPriceAlert.Application.Interfaces;
 using Timer = System.Timers.Timer;
 using StockPriceAlert.Domain.Shared;
+using StockPriceAlert.Domain.Excpetion;
 
 namespace StockPriceAlert.Domain.Services
 {
@@ -26,6 +27,12 @@ namespace StockPriceAlert.Domain.Services
             timer.Elapsed += OnTimedEvent;
             timer.AutoReset = true;
             timer.Enabled = true;
+        }
+
+        public async Task checkStockAsync()
+        {
+            decimal price = await StockPriceFetcher.getPrice(this.stockAlertParameters.StockCode);
+            Console.WriteLine($"{this.stockAlertParameters.StockCode} FOUND: {price}");
         }
 
         private void OnTimedEvent(object? sender, ElapsedEventArgs e)

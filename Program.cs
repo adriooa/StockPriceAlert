@@ -6,7 +6,7 @@ using StockPriceAlert.Domain.Services;
 namespace StockPriceAlert;
 class Program
 {
-    public static void Main(String[] args)
+    public static async void Main(String[] args)
     {
         try
         {
@@ -16,10 +16,13 @@ class Program
                 .Build();
 
             var EmailSender = new EmailSender(config);
+            var StockPriceFetcher = new StockPriceFetcher(config);
 
             var stockArgs = GetStockAlertParameters(args);
 
-            var StockService = new MonitorStockPrice(new AlertUser(EmailSender), new StockPriceFetcher(config), stockArgs);
+            var StockService = new MonitorStockPrice(new AlertUser(EmailSender), StockPriceFetcher, stockArgs);
+
+            await StockService.checkStockAsync();
 
             StockService.StartMonitor();
 
